@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   MoreHorizontal,
   Eye,
@@ -73,6 +74,7 @@ export function OrdersTable({ orders: initialOrders }: OrdersTableProps) {
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null)
   const { toast } = useToast()
   const supabase = createClient()
+  const router = useRouter()
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
@@ -97,6 +99,8 @@ export function OrdersTable({ orders: initialOrders }: OrdersTableProps) {
         title: "Order updated",
         description: `Order status changed to ${statusConfig[newStatus].label}`,
       })
+
+      router.refresh()
     } catch (error) {
       toast({
         title: "Error",

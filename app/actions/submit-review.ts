@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 export async function submitReview(formData: {
   productId: string
+  productSlug?: string
   rating: number
   title: string
   comment: string
@@ -39,7 +40,7 @@ export async function submitReview(formData: {
 
   console.log("[v0] Server action: Review inserted successfully:", data)
 
-  revalidatePath(`/product/[slug]`, "page")
+  revalidatePath("/product/[slug]", "page")
 
-  return { success: true }
+  return { success: true, data }
 }

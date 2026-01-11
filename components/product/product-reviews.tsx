@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast"
 import { createClient } from "@/lib/supabase/client"
 import useSWR from "swr"
 import { submitReview } from "@/app/actions/submit-review"
+import { useRouter } from "next/navigation"
 
 interface ProductReviewsProps {
   productId: string
@@ -27,6 +28,7 @@ export function ProductReviews({ productId, reviews: initialReviews }: ProductRe
   const [comment, setComment] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const router = useRouter()
 
   const supabase = createClient()
 
@@ -118,6 +120,7 @@ export function ProductReviews({ productId, reviews: initialReviews }: ProductRe
       setComment("")
 
       await mutateReviews(undefined, { revalidate: true })
+      router.refresh()
     } catch (error: unknown) {
       toast({
         title: "Error",

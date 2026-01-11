@@ -5,10 +5,13 @@ import { redirect } from "next/navigation"
 import type { Order } from "@/types/database"
 
 export const dynamic = "force-dynamic"
+export const revalidate = 0
 
 export default async function AdminOrdersPage() {
-  // First verify the user is admin using auth client
+  const supabaseAdmin = createAdminClient()
   const supabase = await createClient()
+
+  // Get user ID from auth client (this works without RLS)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -17,13 +20,11 @@ export default async function AdminOrdersPage() {
     redirect("/login")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+  const { data: profile } = await supabaseAdmin.from("profiles").select("role").eq("id", user.id).single()
 
   if (profile?.role !== "admin") {
     redirect("/")
   }
-
-  const supabaseAdmin = createAdminClient()
 
   const { data: orders, error } = await supabaseAdmin
     .from("orders")
