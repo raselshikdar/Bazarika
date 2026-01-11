@@ -206,7 +206,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
-                            <Link href={`/admin/orders/${order.id}`}>
+                            <Link href={`/orders/${order.id}`}>
                               <Eye className="h-4 w-4 mr-2" />
                               View Details
                             </Link>
