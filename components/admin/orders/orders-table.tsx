@@ -95,7 +95,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         description: `Order status changed to ${statusConfig[newStatus].label}`,
       })
 
-      window.location.href = "/admin/orders"
+      router.refresh()
     } catch (error) {
       toast({
         title: "Error",

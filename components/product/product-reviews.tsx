@@ -22,6 +22,8 @@ interface ProductReviewsProps {
   reviews: Review[]
 }
 
+type ReviewWithProfile = Review & { profile: { full_name: string } | null }
+
 export function ProductReviews({ productId, reviews: initialReviews }: ProductReviewsProps) {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
@@ -42,16 +44,49 @@ export function ProductReviews({ productId, reviews: initialReviews }: ProductRe
   const { data: reviews = initialReviews, mutate: mutateReviews } = useSWR(
     `reviews-${productId}`,
     async () => {
-      const { data, error } = await supabase
+      // Fetch reviews without nested profile (no direct FK)
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from("reviews")
-        .select("*, profile:profiles(full_name)")
+        .select("*")
         .eq("product_id", productId)
         .order("created_at", { ascending: false })
 
-      if (error) {
-        console.error("[v0] Reviews fetch error:", error)
+      if (reviewsError) {
+        console.error("[v0] Reviews fetch error:", reviewsError)
+        return initialReviews
       }
-      return (data as Review[]) || initialReviews
+
+      if (!reviewsData || reviewsData.length === 0) {
+        return []
+      }
+
+      // Fetch profiles separately
+      const userIds = reviewsData.map((r) => r.user_id).filter(Boolean)
+      const uniqueUserIds = [...new Set(userIds)]
+
+      let profilesMap: Record<string, { full_name: string }> = {}
+
+      if (uniqueUserIds.length > 0) {
+        const { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", uniqueUserIds)
+
+        if (profiles) {
+          profilesMap = profiles.reduce(
+            (acc, p) => {
+              acc[p.id] = { full_name: p.full_name || "" }
+              return acc
+            },
+            {} as Record<string, { full_name: string }>,
+          )
+        }
+      }
+
+      // Manually join reviews with profiles
+      const reviewsWithProfiles: ReviewWithProfile[] = reviewsData.map((review) => ({
+        ...review,
+        profile: profilesMap[review.user_id] || null,
+      }))
+
+      return reviewsWithProfiles as Review[]
     },
     {
       fallbackData: initialReviews,
