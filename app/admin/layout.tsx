@@ -4,6 +4,9 @@ import { redirect } from "next/navigation"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 const ADMIN_EMAIL = "raselshikdar597@gmail.com"
 
 export default async function AdminLayout({
