@@ -7,8 +7,6 @@ import { AdminHeader } from "@/components/admin/admin-header"
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
-const ADMIN_EMAIL = "raselshikdar597@gmail.com"
-
 export default async function AdminLayout({
   children,
 }: {
@@ -24,8 +22,13 @@ export default async function AdminLayout({
     redirect("/login?redirect=/admin")
   }
 
-  const isAdmin = user.email === ADMIN_EMAIL
-  if (!isAdmin) {
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  if (error || profile?.role !== "admin") {
     redirect("/")
   }
 
