@@ -30,7 +30,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { formatCurrency, formatDate, cn } from "@/lib/utils"
 import type { Order, OrderStatus } from "@/types/database"
-import { createClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { updateOrderStatus } from "@/app/actions/orders"
 
@@ -67,13 +66,11 @@ const statusConfig: Record<OrderStatus, { label: string; icon: React.ElementType
   cancelled: { label: "Cancelled", icon: XCircle, color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100" },
 }
 
-export function OrdersTable({ orders: initialOrders }: OrdersTableProps) {
-  const [orders, setOrders] = useState(initialOrders)
+export function OrdersTable({ orders }: OrdersTableProps) {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null)
   const { toast } = useToast()
-  const supabase = createClient()
   const router = useRouter()
 
   const filteredOrders = orders.filter((order) => {
@@ -92,8 +89,6 @@ export function OrdersTable({ orders: initialOrders }: OrdersTableProps) {
       if (!result.success) {
         throw new Error(result.error)
       }
-
-      setOrders(orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)))
 
       toast({
         title: "Order updated",
