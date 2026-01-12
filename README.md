@@ -108,9 +108,8 @@ Create a `.env.local` file with the following:
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-⚠️ Never expose:
-SUPABASE_SERVICE_ROLE_KEY on the client side.
 ```
+⚠️ Never expose SUPABASE_SERVICE_ROLE_KEY on the client side.
 
 ---
 
