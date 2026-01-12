@@ -4,7 +4,7 @@ Bazarika is a full-featured, modern e-commerce web application built with **Next
 It supports user authentication, product management, orders, reviews, wishlist, admin dashboard, and secure role-based access control.
 
 🔗 **Live Site:** https://v0-bazarika-2.vercel.app/  
-🔗 **Admin Panel:** https://v0-bazarika-2.vercel.app/admin  
+🔗 **Admin Panel:** https://v0-bazarika-2.vercel.app/admin
 
 ---
 
@@ -110,6 +110,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ⚠️ Never expose:
 SUPABASE_SERVICE_ROLE_KEY on the client side.
+```
 
 ---
 
@@ -126,6 +127,7 @@ bun run dev
 # or
 npm run dev
 Open http://localhost:3000
+```
 
 ---
 
